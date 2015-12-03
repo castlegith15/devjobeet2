@@ -1,0 +1,121 @@
+Pr1\JobeetBundle\Entity\Job:
+    type: entity
+    repositoryClass: Pr1\JobeetBundle\Repository\JobRepository
+    table: job
+    indexes:
+        fk_job_category_idx:
+            columns:
+                - category_id
+    uniqueConstraints:
+        token_UNIQUE:
+            columns:
+                - token
+    id:
+        id:
+            type: integer
+            nullable: false
+            unsigned: true
+            comment: ''
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        type:
+            type: string
+            nullable: true
+            length: 45
+            fixed: false
+            comment: ''
+        company:
+            type: string
+            nullable: false
+            length: 45
+            fixed: false
+            comment: ''
+        logo:
+            type: string
+            nullable: true
+            length: 45
+            fixed: false
+            comment: ''
+        url:
+            type: string
+            nullable: true
+            length: 45
+            fixed: false
+            comment: ''
+        position:
+            type: string
+            nullable: false
+            length: 45
+            fixed: false
+            comment: ''
+        location:
+            type: string
+            nullable: false
+            length: 45
+            fixed: false
+            comment: ''
+        description:
+            type: text
+            nullable: true
+            length: null
+            fixed: false
+            comment: ''
+        howToApply:
+            type: text
+            nullable: true
+            length: null
+            fixed: false
+            comment: ''
+            column: how_to_apply
+        token:
+            type: string
+            nullable: true
+            length: 45
+            fixed: false
+            comment: ''
+        isPublic:
+            type: boolean
+            nullable: true
+            comment: ''
+            column: is_public
+        isActivated:
+            type: boolean
+            nullable: true
+            comment: ''
+            column: is_activated
+        email:
+            type: string
+            nullable: true
+            length: 45
+            fixed: false
+            comment: ''
+        expiresAt:
+            type: datetime
+            nullable: false
+            comment: ''
+            column: expires_at
+        createdAt:
+            type: datetime
+            nullable: false
+            comment: ''
+            column: created_at
+        updatedAt:
+            type: datetime
+            nullable: true
+            comment: ''
+            column: updated_at
+    manyToOne:
+        category:
+            targetEntity: Category
+            cascade: {  }
+            mappedBy: null
+            inversedBy: Job
+            joinColumns:
+                category_id:
+                    referencedColumnName: id
+            orphanRemoval: false
+    lifecycleCallbacks:
+        prePersist: [ setTokenValue, setCreatedAtValue, setExpiresAtValue]
+        preUpdate: [ setUpdatedAtValue ]

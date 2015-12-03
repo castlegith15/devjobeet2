@@ -1,0 +1,58 @@
+Pr1\JobeetBundle\Entity\Category:
+    type: entity
+    repositoryClass: Pr1\JobeetBundle\Repository\CategoryRepository
+    table: category
+    uniqueConstraints:
+        name_UNIQUE:
+            columns:
+                - name
+        slug_UNIQUE:
+            columns:
+                - slug
+    id:
+        id:
+            type: integer
+            nullable: false
+            unsigned: true
+            comment: ''
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            nullable: false
+            length: 45
+            fixed: false
+            comment: ''
+        slug:
+            type: string
+            nullable: false
+            length: 45
+            fixed: false
+            comment: ''
+    oneToMany:
+        job:
+            targetEntity: Job
+            mappedBy: category
+    manyToMany:
+        affiliate:
+            targetEntity: Affiliate
+            cascade: {  }
+            mappedBy: null
+            inversedBy: category
+            joinTable:
+                name: category_affiliate
+                joinColumns:
+                    -
+                        name: category_id
+                        referencedColumnName: id
+                inverseJoinColumns:
+                    -
+                        name: affiliate_id
+                        referencedColumnName: id
+            orderBy: null
+    lifecycleCallbacks:
+        prePersist: [ setSlugValue ]
+        preUpdate: [ setSlugValue ]
+
