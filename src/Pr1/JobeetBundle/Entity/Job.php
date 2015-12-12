@@ -3,10 +3,16 @@
 namespace Pr1\JobeetBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+
 use \DateTime;
 use  \Pr1\JobeetBundle\Utils\Jobeet as Jobeet;
 /**
  * Job
+ *
+ * @Vich\Uploadable
  */
 class Job
 {
@@ -16,11 +22,16 @@ class Job
     private $id;
 
     /**
+     * @Assert\NotBlank()
+     * @Assert\Choice(callback = "getTypeValues")
+     *
      * @var string
      */
     private $type;
 
     /**
+     * @Assert\NotBlank()
+     *
      * @var string
      */
     private $company;
@@ -31,31 +42,57 @@ class Job
     private $logo;
 
     /**
+     * @Assert\File(
+     *     maxSize="5M",
+     *     mimeTypes={"image/png", "image/jpeg", "image/pjpeg", "image/gif"}
+     * )
+     * @Vich\UploadableField(mapping="job_logo", fileNameProperty="logo")
+     *
+     * @var File $logovirtual
+     *
+     * This is the virtual field that will populate logo with the resulting file.
+     */
+    protected $logovirtual;
+
+
+    /**
+     * @Assert\Url()
+     *
      * @var string
      */
     private $url;
 
     /**
+     * @Assert\NotBlank()
+     *
      * @var string
      */
     private $position;
 
     /**
+     * @Assert\NotBlank()
+     *
      * @var string
      */
     private $location;
 
     /**
+     * @Assert\NotBlank()
+     *
      * @var string
      */
     private $description;
 
     /**
+     * @Assert\NotBlank()
+     *
      * @var string
      */
     private $howToApply;
 
     /**
+     * @Assert\NotBlank()
+     *
      * @var string
      */
     private $token;
@@ -71,6 +108,9 @@ class Job
     private $isActivated;
 
     /**
+     * @Assert\NotBlank()
+     * @Assert\Email
+     *
      * @var string
      */
     private $email;
@@ -91,6 +131,8 @@ class Job
     private $updatedAt;
 
     /**
+     * @Assert\NotBlank()
+     *
      * @var \Pr1\JobeetBundle\Entity\Category
      */
     private $category;
@@ -150,6 +192,25 @@ class Job
     public function getCompany()
     {
         return $this->company;
+    }
+
+    public function setLogoVirtual(File $image = null)
+    {
+        $this->logovirtual = $image;
+
+        if ($image) {
+            // It is required that at least one field changes if you are using doctrine
+            // otherwise the event listeners won't be called and the file is lost
+            $this->updatedAt = new \DateTime('now');
+        }
+    }
+
+    /**
+     * @return File
+     */
+    public function getLogoVirtual()
+    {
+        return $this->logovirtual;
     }
 
     /**

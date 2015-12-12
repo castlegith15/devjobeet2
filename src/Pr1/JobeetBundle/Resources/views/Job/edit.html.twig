@@ -46,6 +46,13 @@
                     </td>
                 </tr>
                 <tr>
+                    <th>{{ form_label(edit_form.logovirtual) }}</th>
+                    <td>
+                        {{ form_errors(edit_form.logovirtual) }}
+                        {{ form(edit_form.logovirtual) }}
+                    </td>
+                </tr>
+                <tr>
                     <th>{{ form_label(edit_form.url) }}</th>
                     <td>
                         {{ form_errors(edit_form.url) }}

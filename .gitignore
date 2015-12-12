@@ -1,4 +1,6 @@
 /web/bundles/
+/web/uploads/jobs
+/web/cov
 /app/bootstrap.php.cache
 /app/cache/*
 /app/config/parameters.yml

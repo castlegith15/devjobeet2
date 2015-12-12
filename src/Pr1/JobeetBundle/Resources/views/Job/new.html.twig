@@ -21,15 +21,8 @@
  
 {% block content %}
     <h1>Job creation</h1>
-    <form action="{{ path('pr1_job_create') }}" method="post" {{ form_enctype(form) }}>
+    <form action={{ form_enctype(form) }}>
         <table id="job_form">
-            <tfoot>
-                <tr>
-                    <td colspan="2">
-                        <input type="submit" value="Preview your job" />
-                    </td>
-                </tr>
-            </tfoot>
             <tbody>
                 <tr>
                     <th>{{ form_label(form.category) }}</th>
@@ -52,6 +45,12 @@
                         {{ form_widget(form.company) }}
                     </td>
                 </tr>
+                <tr>
+                    <th>{{ form_label(form.logovirtual) }}</th>
+                    <td>
+                        {{ form_errors(form.logovirtual) }}
+                        {{ form_widget(form.logovirtual) }}
+                    </td>
                 </tr>
                 <tr>
                     <th>{{ form_label(form.url) }}</th>
