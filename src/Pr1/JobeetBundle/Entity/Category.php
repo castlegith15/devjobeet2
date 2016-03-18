@@ -3,53 +3,72 @@
 namespace Pr1\JobeetBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 use Pr1\JobeetBundle\Utils\Jobeet as Jobeet;
+
 
 /**
  * Category
+ *
+ * @ORM\Table()
+ * @ORM\Entity(repositoryClass="Pr1\JobeetBundle\Entity\CategoryRepository")
+ * @ORM\HasLifecycleCallbacks
  */
 class Category
 {
     /**
      * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="name", type="string", length=255 , unique=true)
      */
     private $name;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="slug", type="string", length=255, unique=true)
      */
     private $slug;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
+     * @ORM\OneToMany(targetEntity="Job", mappedBy="category")
      */
-    private $affiliate;
+
+     private $jobs;
+
+     private $active_jobs;
+
+     private $more_jobs;
+
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $job;
-    
-    private $active_jobs;
+     * @ORM\ManyToMany(targetEntity="Affiliate", mappedBy="categories")
+     **/
 
-    private $more_jobs;
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->affiliate = new \Doctrine\Common\Collections\ArrayCollection();
-    }
+     private $affiliates;
+
+
+     public function __construct()
+     {
+        $this->jobs= new ArrayCollection();
+        $this->affiliates= new ArrayCollection();
+     }    
+
+
 
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -60,6 +79,7 @@ class Category
      * Set name
      *
      * @param string $name
+     *
      * @return Category
      */
     public function setName($name)
@@ -72,7 +92,7 @@ class Category
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -83,6 +103,7 @@ class Category
      * Set slug
      *
      * @param string $slug
+     *
      * @return Category
      */
     public function setSlug($slug)
@@ -95,46 +116,13 @@ class Category
     /**
      * Get slug
      *
-     * @return string 
+     * @return string
      */
     public function getSlug()
     {
         return $this->slug;
     }
 
-    /**
-     * Add affiliate
-     *
-     * @param \Pr1\JobeetBundle\Entity\Affiliate $affiliate
-     * @return Category
-     */
-    public function addAffiliate(\Pr1\JobeetBundle\Entity\Affiliate $affiliate)
-    {
-        $this->affiliate[] = $affiliate;
-
-        return $this;
-    }
-
-    /**
-     * Remove affiliate
-     *
-     * @param \Pr1\JobeetBundle\Entity\Affiliate $affiliate
-     */
-    public function removeAffiliate(\Pr1\JobeetBundle\Entity\Affiliate $affiliate)
-    {
-        $this->affiliate->removeElement($affiliate);
-    }
-
-    /**
-     * Get affiliate
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getAffiliate()
-    {
-        return $this->affiliate;
-    }
-    
     /**
      * Add job
      *
@@ -144,7 +132,7 @@ class Category
      */
     public function addJob(\Pr1\JobeetBundle\Entity\Job $job)
     {
-        $this->job[] = $job;
+        $this->jobs[] = $job;
 
         return $this;
     }
@@ -156,23 +144,56 @@ class Category
      */
     public function removeJob(\Pr1\JobeetBundle\Entity\Job $job)
     {
-        $this->job->removeElement($job);
+        $this->jobs->removeElement($job);
     }
 
     /**
-     * Get job
+     * Get jobs
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getJob()
+    public function getJobs()
     {
-        return $this->job;
+        return $this->jobs;
     }
 
+    /**
+     * Add affiliate
+     *
+     * @param \Pr1\JobeetBundle\Entity\Affiliate $affiliate
+     *
+     * @return Category
+     */
+    public function addAffiliate(\Pr1\JobeetBundle\Entity\Affiliate $affiliate)
+    {
+        $this->affiliates[] = $affiliate;
 
+        return $this;
+    }
+
+    /**
+     * Remove affiliate
+     *
+     * @param \Pr1\JobeetBundle\Entity\Affiliate $affiliate
+     */
+    public function removeAffiliate(\Pr1\JobeetBundle\Entity\Affiliate $affiliate)
+    {
+        $this->affiliates->removeElement($affiliate);
+    }
+
+    /**
+     * Get affiliates
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getAffiliates()
+    {
+        return $this->affiliates;
+    }
 
     /**
      * @ORM\PrePersist
+     * @ORM\PreUpdate
      */
     public function setSlugValue()
     {
@@ -182,14 +203,14 @@ class Category
     public function __toString()
     {
         return $this->getName() ? $this->getName() : "";
-    } 
+    }
 
 
     public function setActiveJobs($jobs)
     {
         $this->active_jobs = $jobs;
     }
- 
+
     public function getActiveJobs()
     {
         return $this->active_jobs;
@@ -199,9 +220,10 @@ class Category
     {
         $this->more_jobs = $jobs >=  0 ? $jobs : 0;
     }
- 
+
     public function getMoreJobs()
     {
         return $this->more_jobs;
     }
+   
 }

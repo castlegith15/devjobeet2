@@ -3,59 +3,80 @@
 namespace Pr1\JobeetBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Affiliate
+ *
+ * @ORM\Table()
+ * @ORM\Entity(repositoryClass="Pr1\JobeetBundle\Entity\AffiliateRepository")
+ * @ORM\HasLifecycleCallbacks
  */
 class Affiliate
 {
     /**
      * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="url", type="string", length=255)
      */
     private $url;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="email", type="string", length=255)
      */
     private $email;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="token", type="string", length=255)
      */
     private $token;
 
     /**
      * @var boolean
+     *
+     * @ORM\Column(name="is_active", type="boolean")
      */
-    private $isActive;
+    private $is_active;
 
     /**
      * @var \DateTime
+     *
+     * @ORM\Column(name="created_at", type="datetime")
      */
-    private $createdAt;
+    private $created_at;
 
+    
     /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $category;
+     * @ORM\ManyToMany(targetEntity="Category", inversedBy="affiliates")
+     * @ORM\JoinTable(name="categories_affiliates")
+     **/
+   
+    private $categories;
 
-    /**
-     * Constructor
-     */
+  
     public function __construct()
     {
-        $this->category = new \Doctrine\Common\Collections\ArrayCollection();
+      $this->categories = new ArrayCollection();
     }
+
 
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -66,6 +87,7 @@ class Affiliate
      * Set url
      *
      * @param string $url
+     *
      * @return Affiliate
      */
     public function setUrl($url)
@@ -78,7 +100,7 @@ class Affiliate
     /**
      * Get url
      *
-     * @return string 
+     * @return string
      */
     public function getUrl()
     {
@@ -89,6 +111,7 @@ class Affiliate
      * Set email
      *
      * @param string $email
+     *
      * @return Affiliate
      */
     public function setEmail($email)
@@ -101,7 +124,7 @@ class Affiliate
     /**
      * Get email
      *
-     * @return string 
+     * @return string
      */
     public function getEmail()
     {
@@ -112,6 +135,7 @@ class Affiliate
      * Set token
      *
      * @param string $token
+     *
      * @return Affiliate
      */
     public function setToken($token)
@@ -124,7 +148,7 @@ class Affiliate
     /**
      * Get token
      *
-     * @return string 
+     * @return string
      */
     public function getToken()
     {
@@ -135,11 +159,12 @@ class Affiliate
      * Set isActive
      *
      * @param boolean $isActive
+     *
      * @return Affiliate
      */
     public function setIsActive($isActive)
     {
-        $this->isActive = $isActive;
+        $this->is_active = $isActive;
 
         return $this;
     }
@@ -147,22 +172,23 @@ class Affiliate
     /**
      * Get isActive
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getIsActive()
     {
-        return $this->isActive;
+        return $this->is_active;
     }
 
     /**
      * Set createdAt
      *
      * @param \DateTime $createdAt
+     *
      * @return Affiliate
      */
     public function setCreatedAt($createdAt)
     {
-        $this->createdAt = $createdAt;
+        $this->created_at = $createdAt;
 
         return $this;
     }
@@ -170,22 +196,23 @@ class Affiliate
     /**
      * Get createdAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreatedAt()
     {
-        return $this->createdAt;
+        return $this->created_at;
     }
 
     /**
      * Add category
      *
      * @param \Pr1\JobeetBundle\Entity\Category $category
+     *
      * @return Affiliate
      */
     public function addCategory(\Pr1\JobeetBundle\Entity\Category $category)
     {
-        $this->category[] = $category;
+        $this->categories[] = $category;
 
         return $this;
     }
@@ -197,18 +224,20 @@ class Affiliate
      */
     public function removeCategory(\Pr1\JobeetBundle\Entity\Category $category)
     {
-        $this->category->removeElement($category);
+        $this->categories->removeElement($category);
     }
 
     /**
-     * Get category
+     * Get categories
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
-    public function getCategory()
+    public function getCategories()
     {
-        return $this->category;
+        return $this->categories;
     }
+
+
     /**
      * @ORM\PrePersist
      */

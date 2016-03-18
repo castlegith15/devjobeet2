@@ -1,10 +1,12 @@
 imports:
     - { resource: parameters.yml }
     - { resource: security.yml }
+    - { resource: @Pr1JobeetBundle/Resources/config/categoryadmin.xml }
+    - { resource: @Pr1JobeetBundle/Resources/config/jobadmin.xml }
 
 framework:
     #esi:             ~
-    #translator:      { fallback: "%locale%" }
+    translator:      { fallback: "%locale%" }
     secret:          "%secret%"
     router:
         resource: "%kernel.root_dir%/config/routing.yml"
@@ -85,3 +87,47 @@ vich_uploader:
                  inject_on_load:   false
                  delete_on_update: true
                  delete_on_remove: true
+
+sonata_admin:
+    title: Jobeet Admin
+#    templates:
+#        show:   Pr1JobeetBundle:JobAdmin:job_show.html.twig
+
+    dashboard:
+        groups:
+            Content:
+                  label: Content
+                  items:
+                      - pr1.jobeet.admin.category
+                      - pr1.jobeet.admin.job
+
+
+        blocks:
+            -
+                  position: left
+                  type: sonata.admin.block.admin_list
+                  settings:
+                      groups: [Content]
+            -
+                 position: right
+                 type: sonata.block.service.text
+                 settings:
+                     content: >
+                          <h2>Welcome to the Sonata Admin</h2>
+                          <p>This is a <code>sonata.block.service.text</code> from the Block Bundle, you can create and add new block in these area by configuring the <code>sonata_admin</code> section.</p> <br/> For instance, here a RSS feed parser (<code>sonata.block.service.rss</code>:
+            -
+                position: right
+                type: sonata.block.service.rss
+                settings:
+                    title: Sonata Project's Feeds
+                    url: http://sonata-project.org/blog/archive.rss
+
+sonata_block:
+    default_contexts: [cms]
+    blocks:
+        sonata.admin.block.admin_list: ~
+        sonata.block.service.text:
+        sonata.block.service.action:
+        sonata.block.service.rss:
+
+

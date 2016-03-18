@@ -1,0 +1,16 @@
+<!-- Pr1/JobeetBundle/Resources/config/jobadmin.xml -->
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+       <service id="pr1.jobeet.admin.job" class="Pr1\JobeetBundle\Admin\JobAdmin">
+          <tag name="sonata.admin" manager_type="orm" group="Content" label="Jobs"/>
+          <argument />
+          <argument>Pr1\JobeetBundle\Entity\Job</argument>
+          <argument />
+    <!--      <call method="setTranslationDomain">
+              <argument>JobeetBundle</argument>
+          </call> -->
+      </service>
+   </services>
+</container>

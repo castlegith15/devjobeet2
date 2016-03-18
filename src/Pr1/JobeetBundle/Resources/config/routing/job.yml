@@ -42,3 +42,8 @@ pr1_job_publish:
     path:      /{token}/publish
     defaults: { _controller: "Pr1JobeetBundle:Job:publish" }
     methods:  POST
+
+pr1_job_extend:
+    path:      /{token}/extend
+    defaults: { _controller: "Pr1JobeetBundle:Job:extend" }
+    methods:  POST 

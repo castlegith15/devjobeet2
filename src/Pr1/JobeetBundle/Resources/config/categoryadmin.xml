@@ -1,0 +1,16 @@
+<!-- Pr1/JobeetBundle/Resources/config/categoryadmin.xml -->
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+       <service id="pr1.jobeet.admin.category" class="Pr1\JobeetBundle\Admin\CategoryAdmin">
+          <tag name="sonata.admin" manager_type="orm" group="Content" label="Category" label_translator_strategy="sonata.admin.label.strategy.native"/>
+          <argument />
+          <argument>Pr1\JobeetBundle\Entity\Category</argument>
+          <argument />
+        <!--  <call method="setTranslationDomain">
+              <argument>JobeetBundle</argument>
+          </call> -->
+      </service>
+   </services>
+</container>

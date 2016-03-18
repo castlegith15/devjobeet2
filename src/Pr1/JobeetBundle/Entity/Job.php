@@ -3,145 +3,178 @@
 namespace Pr1\JobeetBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use \DateTime;
+use  \Pr1\JobeetBundle\Utils\Jobeet as Jobeet;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
-use \DateTime;
-use  \Pr1\JobeetBundle\Utils\Jobeet as Jobeet;
+
 /**
  * Job
  *
+ * @ORM\Table()
+ * @ORM\Entity(repositoryClass="Pr1\JobeetBundle\Entity\JobRepository")
+ * @ORM\HasLifecycleCallbacks
  * @Vich\Uploadable
  */
 class Job
 {
     /**
      * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="type", type="string", length=255 , nullable=true)
+     *
      * @Assert\NotBlank()
      * @Assert\Choice(callback = "getTypeValues")
-     *
-     * @var string
      */
     private $type;
 
     /**
-     * @Assert\NotBlank()
-     *
      * @var string
+     *
+     * @ORM\Column(name="company", type="string", length=255)
+     *
+     * @Assert\NotBlank()
      */
     private $company;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="logo", type="string", length=255 , nullable=true)
      */
     private $logo;
-
+    
     /**
      * @Assert\File(
      *     maxSize="5M",
-     *     mimeTypes={"image/png", "image/jpeg", "image/pjpeg", "image/gif"}
+     *     mimeTypes={"image/png", "image/jpeg", "image/pjpeg", "image/jpg", "image/gif"}
      * )
      * @Vich\UploadableField(mapping="job_logo", fileNameProperty="logo")
      *
-     * @var File $logovirtual
+     * @var File $logo_virtual
      *
      * This is the virtual field that will populate logo with the resulting file.
      */
-    protected $logovirtual;
-
+    protected $logo_virtual;
 
     /**
-     * @Assert\Url()
-     *
      * @var string
+     *
+     * @ORM\Column(name="url", type="string", length=255 , nullable=true)
+     *
+     * @Assert\Url()
      */
     private $url;
 
     /**
-     * @Assert\NotBlank()
-     *
      * @var string
+     *
+     * @ORM\Column(name="position", type="string", length=255)
+     *
+     * @Assert\NotBlank()
      */
     private $position;
 
     /**
-     * @Assert\NotBlank()
-     *
      * @var string
+     *
+     * @ORM\Column(name="location", type="string", length=255)
+     *
+     * @Assert\NotBlank()
      */
     private $location;
 
     /**
-     * @Assert\NotBlank()
-     *
      * @var string
+     *
+     * @ORM\Column(name="description", type="text")
+     *
+     * @Assert\NotBlank()
      */
     private $description;
 
     /**
-     * @Assert\NotBlank()
-     *
      * @var string
+     *
+     * @ORM\Column(name="how_to_apply", type="text")
+     *
+     * @Assert\NotBlank()
      */
-    private $howToApply;
+    private $how_to_apply;
 
     /**
-     * @Assert\NotBlank()
-     *
      * @var string
+     *
+     * @ORM\Column(name="token", type="string", length=255 , unique=true)
      */
     private $token;
 
     /**
      * @var boolean
+     *
+     * @ORM\Column(name="is_public", type="boolean" , nullable=true)
      */
-    private $isPublic;
+    private $is_public;
 
     /**
      * @var boolean
+     *
+     * @ORM\Column(name="is_activated", type="boolean" , nullable=true)
      */
-    private $isActivated;
+    private $is_activated;
 
     /**
-     * @Assert\NotBlank()
-     * @Assert\Email
-     *
      * @var string
+     *
+     * @ORM\Column(name="email", type="string", length=255)
+     *
+     * @Assert\NotBlank()
+     * @Assert\Email()
      */
     private $email;
 
     /**
      * @var \DateTime
-     */
-    private $expiresAt;
-
-    /**
-     * @var \DateTime
-     */
-    private $createdAt;
-
-    /**
-     * @var \DateTime
-     */
-    private $updatedAt;
-
-    /**
-     * @Assert\NotBlank()
      *
-     * @var \Pr1\JobeetBundle\Entity\Category
+     * @ORM\Column(name="expires_at", type="datetime")
      */
-    private $category;
+    private $expires_at;
 
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="created_at", type="datetime")
+     */
+    private $created_at;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="updated_at", type="datetime" , nullable=true) 
+     */
+    private $updated_at;
+
+     /**
+      * @ORM\ManyToOne(targetEntity="Category", inversedBy="jobs")
+      * @ORM\JoinColumn(name="category_id", referencedColumnName="id")
+      **/
+    private $category;
 
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -152,6 +185,7 @@ class Job
      * Set type
      *
      * @param string $type
+     *
      * @return Job
      */
     public function setType($type)
@@ -164,7 +198,7 @@ class Job
     /**
      * Get type
      *
-     * @return string 
+     * @return string
      */
     public function getType()
     {
@@ -175,6 +209,7 @@ class Job
      * Set company
      *
      * @param string $company
+     *
      * @return Job
      */
     public function setCompany($company)
@@ -187,7 +222,7 @@ class Job
     /**
      * Get company
      *
-     * @return string 
+     * @return string
      */
     public function getCompany()
     {
@@ -196,12 +231,12 @@ class Job
 
     public function setLogoVirtual(File $image = null)
     {
-        $this->logovirtual = $image;
+        $this->logo_virtual = $image;
 
         if ($image) {
             // It is required that at least one field changes if you are using doctrine
             // otherwise the event listeners won't be called and the file is lost
-            $this->updatedAt = new \DateTime('now');
+            $this->updated_at = new \DateTime('now');
         }
     }
 
@@ -210,13 +245,14 @@ class Job
      */
     public function getLogoVirtual()
     {
-        return $this->logovirtual;
+        return $this->logo_virtual;
     }
 
     /**
      * Set logo
      *
      * @param string $logo
+     *
      * @return Job
      */
     public function setLogo($logo)
@@ -229,7 +265,7 @@ class Job
     /**
      * Get logo
      *
-     * @return string 
+     * @return string
      */
     public function getLogo()
     {
@@ -240,6 +276,7 @@ class Job
      * Set url
      *
      * @param string $url
+     *
      * @return Job
      */
     public function setUrl($url)
@@ -252,7 +289,7 @@ class Job
     /**
      * Get url
      *
-     * @return string 
+     * @return string
      */
     public function getUrl()
     {
@@ -263,6 +300,7 @@ class Job
      * Set position
      *
      * @param string $position
+     *
      * @return Job
      */
     public function setPosition($position)
@@ -275,7 +313,7 @@ class Job
     /**
      * Get position
      *
-     * @return string 
+     * @return string
      */
     public function getPosition()
     {
@@ -286,6 +324,7 @@ class Job
      * Set location
      *
      * @param string $location
+     *
      * @return Job
      */
     public function setLocation($location)
@@ -298,7 +337,7 @@ class Job
     /**
      * Get location
      *
-     * @return string 
+     * @return string
      */
     public function getLocation()
     {
@@ -309,6 +348,7 @@ class Job
      * Set description
      *
      * @param string $description
+     *
      * @return Job
      */
     public function setDescription($description)
@@ -321,7 +361,7 @@ class Job
     /**
      * Get description
      *
-     * @return string 
+     * @return string
      */
     public function getDescription()
     {
@@ -332,11 +372,12 @@ class Job
      * Set howToApply
      *
      * @param string $howToApply
+     *
      * @return Job
      */
     public function setHowToApply($howToApply)
     {
-        $this->howToApply = $howToApply;
+        $this->how_to_apply = $howToApply;
 
         return $this;
     }
@@ -344,17 +385,18 @@ class Job
     /**
      * Get howToApply
      *
-     * @return string 
+     * @return string
      */
     public function getHowToApply()
     {
-        return $this->howToApply;
+        return $this->how_to_apply;
     }
 
     /**
      * Set token
      *
      * @param string $token
+     *
      * @return Job
      */
     public function setToken($token)
@@ -367,7 +409,7 @@ class Job
     /**
      * Get token
      *
-     * @return string 
+     * @return string
      */
     public function getToken()
     {
@@ -378,11 +420,12 @@ class Job
      * Set isPublic
      *
      * @param boolean $isPublic
+     *
      * @return Job
      */
     public function setIsPublic($isPublic)
     {
-        $this->isPublic = $isPublic;
+        $this->is_public = $isPublic;
 
         return $this;
     }
@@ -390,22 +433,23 @@ class Job
     /**
      * Get isPublic
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getIsPublic()
     {
-        return $this->isPublic;
+        return $this->is_public;
     }
 
     /**
      * Set isActivated
      *
      * @param boolean $isActivated
+     *
      * @return Job
      */
     public function setIsActivated($isActivated)
     {
-        $this->isActivated = $isActivated;
+        $this->is_activated = $isActivated;
 
         return $this;
     }
@@ -413,17 +457,18 @@ class Job
     /**
      * Get isActivated
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getIsActivated()
     {
-        return $this->isActivated;
+        return $this->is_activated;
     }
 
     /**
      * Set email
      *
      * @param string $email
+     *
      * @return Job
      */
     public function setEmail($email)
@@ -436,7 +481,7 @@ class Job
     /**
      * Get email
      *
-     * @return string 
+     * @return string
      */
     public function getEmail()
     {
@@ -447,11 +492,12 @@ class Job
      * Set expiresAt
      *
      * @param \DateTime $expiresAt
+     *
      * @return Job
      */
     public function setExpiresAt($expiresAt)
     {
-        $this->expiresAt = $expiresAt;
+        $this->expires_at = $expiresAt;
 
         return $this;
     }
@@ -459,22 +505,23 @@ class Job
     /**
      * Get expiresAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getExpiresAt()
     {
-        return $this->expiresAt;
+        return $this->expires_at;
     }
 
     /**
      * Set createdAt
      *
      * @param \DateTime $createdAt
+     *
      * @return Job
      */
     public function setCreatedAt($createdAt)
     {
-        $this->createdAt = $createdAt;
+        $this->created_at = $createdAt;
 
         return $this;
     }
@@ -482,22 +529,23 @@ class Job
     /**
      * Get createdAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreatedAt()
     {
-        return $this->createdAt;
+        return $this->created_at;
     }
 
     /**
      * Set updatedAt
      *
      * @param \DateTime $updatedAt
+     *
      * @return Job
      */
     public function setUpdatedAt($updatedAt)
     {
-        $this->updatedAt = $updatedAt;
+        $this->updated_at = $updatedAt;
 
         return $this;
     }
@@ -505,17 +553,18 @@ class Job
     /**
      * Get updatedAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getUpdatedAt()
     {
-        return $this->updatedAt;
+        return $this->updated_at;
     }
 
     /**
      * Set category
      *
      * @param \Pr1\JobeetBundle\Entity\Category $category
+     *
      * @return Job
      */
     public function setCategory(\Pr1\JobeetBundle\Entity\Category $category = null)
@@ -528,12 +577,14 @@ class Job
     /**
      * Get category
      *
-     * @return \Pr1\JobeetBundle\Entity\Category 
+     * @return \Pr1\JobeetBundle\Entity\Category
      */
     public function getCategory()
     {
         return $this->category;
     }
+
+
     /**
      * @ORM\PrePersist
      */
@@ -543,7 +594,7 @@ class Job
             $this->created_at = new DateTime();
         }
     }
-
+ 
     /**
      * @ORM\PreUpdate
      */
@@ -552,13 +603,14 @@ class Job
         $this->updated_at = new DateTime();
     }
 
-    /**
+     /**
      * @ORM\PrePersist
      */
     public function setExpiresAtValue()
     {
         if(!$this->getExpiresAt()) {
-            $now = $this->getCreatedAt() ? $this->getCreatedAt()->format('U') : time();
+            $now = $this->getCreatedAt() ? $this->getCreatedAt()->format('U') :
+time();
             $this->expires_at = new DateTime(date('Y-m-d H:i:s', $now + 86400 * 90));
         }
     }
@@ -567,12 +619,12 @@ class Job
     {
         return Jobeet::slugify($this->getCompany());
     }
- 
+
     public function getPositionSlug()
     {
         return Jobeet::slugify($this->getPosition());
     }
- 
+
     public function getLocationSlug()
     {
         return Jobeet::slugify($this->getLocation());
@@ -580,9 +632,10 @@ class Job
 
     public static function getTypes()
     {
-        return array('full-time' => 'Full time', 'part-time' => 'Part time', 'freelance' => 'Freelance');
+        return array('full-time' => 'Full time', 'part-time' => 'Part time', 'fr
+eelance' => 'Freelance');
     }
- 
+
     public static function getTypeValues()
     {
         return array_keys(self::getTypes());
@@ -602,12 +655,12 @@ class Job
     {
         return $this->getDaysBeforeExpires() < 0;
     }
- 
+
     public function expiresSoon()
     {
-        return $this->getDaysBeforeExpires() < 5;    
+        return $this->getDaysBeforeExpires() < 5;
     }
- 
+
     public function getDaysBeforeExpires()
     {
         return ceil(($this->getExpiresAt()->format('U') - time()) / 86400);
@@ -617,4 +670,17 @@ class Job
     {
         $this->setIsActivated(true);
     }
+
+   public function extend()
+   {
+    if (!$this->expiresSoon())
+    {
+        return false;
+    }
+
+    $this->expires_at = new DateTime(date('Y-m-d H:i:s', time() + 86400 * 90));
+
+    return true;
+    }
+
 }
