@@ -79,7 +79,7 @@ class JobAdmin extends Admin
             ->add('category')
             ->add('type')
             ->add('company')
-            ->add('webPath', 'string', array('template' => 'Pr1JobeetBundle:JobAdmin:list_image.html.twig'))
+        #    ->add('webPath', 'string', array('template' => 'Pr1JobeetBundle:JobAdmin:list_image.html.twig'))
             ->add('url')
             ->add('position')
             ->add('location')
