@@ -683,4 +683,10 @@ eelance' => 'Freelance');
     return true;
     }
 
+    public function getWebPath()
+    {
+        $webPath = "/uploads/jobs/".$this->logo;
+        return $webPath ;
+    }
+
 }

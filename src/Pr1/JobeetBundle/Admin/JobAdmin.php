@@ -14,6 +14,9 @@ use Pr1\JobeetBundle\Entity\Job;
 class JobAdmin extends Admin
 {
 
+//  preview mode during create/edit
+    public $supportsPreviewMode = true;
+
 // setup the defaut sort column and order
     protected $datagridValues = array(
         '_sort_order' => 'DESC',
@@ -22,11 +25,26 @@ class JobAdmin extends Admin
  
     protected function configureFormFields(FormMapper $formMapper)
     {
+        // get the current Image instance
+        $job = $this->getSubject();
+
+        // use $fileFieldOptions so we can add other options to the field
+        $fileFieldOptions = array('label' => 'Company logo','required' => false);
+        if ($job && ($webPath = $job->getWebPath())) {
+             // get the container so the full path to the image can be set
+            $container = $this->getConfigurationPool()->getContainer();
+            $fullPath = $container->get('request')->getBasePath().$webPath;
+
+            // add a 'help' option containing the preview's img tag
+            $fileFieldOptions['help'] = '<img src="'.$fullPath.'" class="admin-preview" />';
+        }
+
         $formMapper
             ->add('category')
             ->add('type', 'choice', array('choices' => Job::getTypes(), 'expanded' => true))
             ->add('company')
-            ->add('logo_virtual', 'file', array('label' => 'Company logo', 'required' => false))
+           # ->add('logo_virtual', 'file', array('label' => 'Company logo', 'required' => false))
+            ->add('logo_virtual', 'file', $fileFieldOptions)
             ->add('url')
             ->add('position')
             ->add('location')
@@ -79,7 +97,7 @@ class JobAdmin extends Admin
             ->add('category')
             ->add('type')
             ->add('company')
-        #    ->add('webPath', 'string', array('template' => 'Pr1JobeetBundle:JobAdmin:list_image.html.twig'))
+            ->add('webPath', 'string', array('template' => 'Pr1JobeetBundle:JobAdmin:list_image.html.twig'))
             ->add('url')
             ->add('position')
             ->add('location')
